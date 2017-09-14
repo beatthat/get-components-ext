@@ -1,7 +1,7 @@
 {
   "name": "get-components-ext",
   "scope": "ape",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "extensions",
   "main": "index.js",
   "repository": {
@@ -30,6 +30,6 @@
     "ncp": "^2.0.0",
     "mkdirp": "^0.5.1",
     "pools": "beatthat/pools#semver:^0.0.7",
-    "transform-path-ext": "beatthat/transform-path-ext#semver:^0.0.1"
+    "transform-path-ext": "beatthat/transform-path-ext#semver:^0.0.4"
   }
 }
