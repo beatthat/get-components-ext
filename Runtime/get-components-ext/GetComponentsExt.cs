@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 namespace BeatThat
 {
@@ -16,6 +17,32 @@ namespace BeatThat
 		public static Component AddIfMissing(this GameObject targetObject, System.Type concreteType)
 		{
 			return targetObject.AddIfMissing(concreteType, concreteType);
+		}
+
+		public static bool DestroyIfPresent<T>(this GameObject targetObject)
+		{
+			return DestroyIfPresent (targetObject, typeof(T));
+		}
+
+		public static bool DestroyIfPresent(this GameObject targetObject, System.Type compType)
+		{
+			using (var toDestroy = ListPool<Component>.Get ()) {
+				targetObject.GetComponents (compType, toDestroy);
+
+				if (toDestroy.Count == 0) {
+					return false;
+				}
+
+				foreach (var c in toDestroy) {
+					if (Application.isPlaying) {
+						GameObject.Destroy (c);
+					} else {
+						GameObject.DestroyImmediate (c);
+					}
+				}
+
+				return true;
+			}
 		}
 
 		public static Component AddIfMissing(this Component targetObject, System.Type interfaceType, System.Type concreteType)
@@ -124,10 +151,26 @@ namespace BeatThat
 			}
 		}
 
+		public static void GetComponents(this Component t, Type cType, List<Component> results, bool includeInactive)
+		{
+			using (var allComps = ListPool<Component>.Get ()) {
+				t.GetComponents<Component> (allComps, includeInactive);
+				foreach (var c in allComps) {
+					if (cType.IsAssignableFrom (c.GetType())) {
+						results.Add (c);
+					}
+				}
+			}
+		}
+
 		public static void GetComponents<T>(this Component t, List<T> results, bool includeInactive) where T : class
 		{
-			if(includeInactive) {
+			GetComponents<T> (t.gameObject, results, includeInactive);
+		}
 
+		public static void GetComponents<T>(this GameObject t, List<T> results, bool includeInactive) where T : class
+		{
+			if(includeInactive) {
 				using(var tmp = ListPool<T>.Get()) {
 					t.GetComponents<T>(tmp);
 					results.AddRange(tmp);
@@ -208,5 +251,27 @@ namespace BeatThat
 				GetComponentsInChildren<T>(childT, results, includeInactive, depth + 1, maxDepth);
 			}
 		}
+
+
+		public static void EditComponent<T>(this Component thisC, Action<T> editAction, bool createMissing = true)
+			where T : Component
+		{
+			var c = createMissing ? thisC.AddIfMissing<T> () : thisC.GetComponent<T> ();
+			if (c == null) {
+				return;
+			}
+			editAction (c);
+		}
+
+		public static void EditComponent<T>(this GameObject thisGO, Action<T> editAction, bool createMissing = true)
+			where T : Component
+		{
+			var c = createMissing ? thisGO.AddIfMissing<T> () : thisGO.GetComponent<T> ();
+			if (c == null) {
+				return;
+			}
+			editAction (c);
+		}
+
 	}
 }
