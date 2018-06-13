@@ -1,13 +1,14 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using BeatThat.Pools;
+using UnityEngine;
 
-namespace BeatThat
+namespace BeatThat.GetComponentsExt
 {
-	/// <summary>
-	/// ext methods for GetComponent[s] with options beyond what Unity's GetComponent methods support
-	/// </summary>
-	public static class GetComponentsExt
+    /// <summary>
+    /// ext methods for GetComponent[s] with options beyond what Unity's GetComponent methods support
+    /// </summary>
+    public static class Ext
 	{
 		public static Component AddIfMissing(this Component targetObject, System.Type concreteType)
 		{
@@ -275,3 +276,6 @@ namespace BeatThat
 
 	}
 }
+
+
+
