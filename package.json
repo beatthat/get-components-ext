@@ -1,7 +1,7 @@
 {
   "name": "get-components-ext",
   "scope": "beatthat",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "extensions",
   "main": "index.js",
   "repository": {
