@@ -215,6 +215,50 @@ namespace BeatThat.GetComponentsExt
 			}
 		}
 
+        public static void GetComponentsInDirectChildren<T>(this Component c, List<T> results, bool includeInactive = false) where T : class
+        {
+            c.transform.GetComponentsInDirectChildren<T>(results, includeInactive);
+        }
+
+        public static void GetComponentsInDirectChildren<T>(this GameObject go, List<T> results, bool includeInactive = false) where T : class
+        {
+            go.transform.GetComponentsInDirectChildren<T>(results, includeInactive);
+        }
+
+        public static int CountComponentsInDirectChildren<T>(this Transform t, bool includeInactive = false) where T : class
+        {
+            using (var results = ListPool<T>.Get())
+            {
+                t.GetComponentsInDirectChildren<T>(results, includeInactive);
+                return results.Count;
+            }
+        }
+
+        public static int CountComponentsInDirectChildren<T>(this Component c, bool includeInactive = false) where T : class
+        {
+            return c.transform.CountComponentsInDirectChildren<T>(includeInactive);
+        }
+
+        public static int CountComponentsInDirectChildren<T>(this GameObject go, bool includeInactive = false) where T : class
+        {
+            return go.transform.CountComponentsInDirectChildren<T>(includeInactive);
+        }
+
+        public static bool HasExactlyOneChildWithComponent<T>(this Transform t, bool includeInactive = false) where T : class
+        {
+            return t.CountComponentsInDirectChildren<T>(includeInactive) == 1;
+        }
+
+        public static bool HasExactlyOneChildWithComponent<T>(this Component c, bool includeInactive = false) where T : class
+        {
+            return c.transform.HasExactlyOneChildWithComponent<T>(includeInactive);
+        }
+
+        public static bool HasExactlyOneChildWithComponent<T>(this GameObject go, bool includeInactive = false) where T : class
+        {
+            return go.transform.HasExactlyOneChildWithComponent<T>(includeInactive);
+        }
+
 		public static void GetComponentsInTrueChildren<T>(this GameObject go, List<T> results, bool includeInactive = false) where T : class
 		{
 			go.transform.GetComponentsInTrueChildren<T>(results, includeInactive);
